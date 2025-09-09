@@ -1,22 +1,20 @@
-<!-- contador.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador con Spring Boot</title>
-    
-    
     <!-- Archivo JavaScript -->
-    <script src="/resources/static/js/contador.js" defer></script>
+    <script src="/js/contador.js"></script>
 </head>
 <body>
     <div class="contador-container">
         <h1>Contador</h1>
         <div id="contador">
-            <button id="disminuir">Disminuir</button>
             <span id="contadorDisplay">0</span>
+            <button id="disminuir">Disminuir</button>
             <button id="aumentar">Aumentar</button>
+            <div id="mensajeError" style="color: red; display: none;"></div> <!-- Mensajes de error -->
         </div>
     </div>
 </body>

@@ -26,7 +26,6 @@ public class Contador {
         }
         return false;
     }
-
     
 
 }

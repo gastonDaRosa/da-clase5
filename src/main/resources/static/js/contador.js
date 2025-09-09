@@ -1,32 +1,54 @@
-// contador.js
 document.addEventListener("DOMContentLoaded", function () {
     const contadorDisplay = document.getElementById("contadorDisplay");
+    const mensajeError = document.getElementById("mensajeError");
 
     // Función para actualizar el contador desde el backend
     function actualizarContador() {
-        fetch('/api/contador')
-            .then(response => response.json())
-            .then(data => {
-                contadorDisplay.innerText = data;
-            })
-            .catch(error => console.error('Error al obtener el contador:', error));
+        fetch('/contador/vistaConectada', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar el valor del contador
+            contadorDisplay.innerText = data[0].parametro;
+            mensajeError.style.display = "none"; // Ocultar cualquier mensaje de error al actualizar
+        })
+        .catch(error => {
+            console.error('Error al obtener el contador:', error);
+        });
     }
 
-    // Función para incrementar el contador en el backend
+    // Función para mostrar un mensaje de error o éxito
+    function mostrarMensaje(mensaje, tipo) {
+        mensajeError.textContent = mensaje;
+        mensajeError.style.color = tipo === "error" ? "red" : "green";
+        mensajeError.style.display = "block";
+    }
+
+    // Función para incrementar el contador
     function incrementarContador() {
-        fetch('/api/contador/sumar', {
+        fetch('/contador/sumar', {
             method: 'POST',
         })
-        .then(() => actualizarContador())  // Actualizar el contador después de incrementar
+        .then(() => actualizarContador()) // Actualizar después de sumar
         .catch(error => console.error('Error al incrementar el contador:', error));
     }
 
-    // Función para decrementar el contador en el backend
+    // Función para decrementar el contador
     function decrementarContador() {
-        fetch('/api/contador/restar', {
+        fetch('/contador/restar', {
             method: 'POST',
         })
-        .then(() => actualizarContador())  // Actualizar el contador después de decrementar
+        .then(response => response.json())
+        .then(data => {
+            if (data[0].id === "mensaje") {
+                // Si la respuesta contiene un mensaje de error, lo mostramos
+                mostrarMensaje(data[0].parametro, "error");
+            } else {
+                // Si no hay error, actualizamos el contador
+                actualizarContador();
+            }
+        })
         .catch(error => console.error('Error al decrementar el contador:', error));
     }
 
