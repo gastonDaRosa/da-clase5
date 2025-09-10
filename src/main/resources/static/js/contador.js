@@ -66,18 +66,20 @@ document.addEventListener("DOMContentLoaded", function () {
     actualizarContador();
 
     // Escuchar cambios en el localStorage (para otras pestañas)
-    window.addEventListener('storage', function(event) {
-        if (event.key === 'contador') {
-            // Solo actualiza si el valor de 'contador' cambia
-            const datos = JSON.parse(event.newValue);
-            contadorDisplay.innerText = datos.valor;
-            if (datos.mensaje) {
-                mostrarMensaje(datos.mensaje, "error");
-            } else {
-                mensajeError.style.display = "none"; // Ocultar el mensaje si no hay error
+    window.addEventListener('storage', 
+        function(event) {
+            if (event.key === 'contador') {
+                // Solo actualiza si el valor de 'contador' cambia
+                const datos = JSON.parse(event.newValue);
+                contadorDisplay.innerText = datos.valor;
+                if (datos.mensaje) {
+                    mostrarMensaje(datos.mensaje, "error");
+                } else {
+                    mensajeError.style.display = "none"; // Ocultar el mensaje si no hay error
+                }
             }
         }
-    });
+    );
 
     // Asignar eventos a los botones
     document.getElementById("aumentar").addEventListener("click", incrementarContador);
