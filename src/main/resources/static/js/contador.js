@@ -30,7 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch('/contador/sumar', {
             method: 'POST',
         })
-        .then(() => actualizarContador()) // Actualizar después de sumar
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar el contador en la pantalla
+            actualizarContador();
+            // Actualizar localStorage con el nuevo valor
+            localStorage.setItem('contador', JSON.stringify({valor: data[0].parametro, mensaje: ""}));
+        })
         .catch(error => console.error('Error al incrementar el contador:', error));
     }
 
@@ -44,9 +50,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data[0].id === "mensaje") {
                 // Si la respuesta contiene un mensaje de error, lo mostramos
                 mostrarMensaje(data[0].parametro, "error");
+                // Actualizamos localStorage con el mensaje de error
+                localStorage.setItem('contador', JSON.stringify({valor: 0, mensaje: data[0].parametro}));
             } else {
-                // Si no hay error, actualizamos el contador
+                // Si no hay error, actualizar el contador
                 actualizarContador();
+                // Actualizar localStorage con el nuevo valor
+                localStorage.setItem('contador', JSON.stringify({valor: data[0].parametro, mensaje: ""}));
             }
         })
         .catch(error => console.error('Error al decrementar el contador:', error));
@@ -54,6 +64,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Inicializar el contador al cargar la página
     actualizarContador();
+
+    // Escuchar cambios en el localStorage (para otras pestañas)
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'contador') {
+            // Solo actualiza si el valor de 'contador' cambia
+            const datos = JSON.parse(event.newValue);
+            contadorDisplay.innerText = datos.valor;
+            if (datos.mensaje) {
+                mostrarMensaje(datos.mensaje, "error");
+            } else {
+                mensajeError.style.display = "none"; // Ocultar el mensaje si no hay error
+            }
+        }
+    });
 
     // Asignar eventos a los botones
     document.getElementById("aumentar").addEventListener("click", incrementarContador);
